@@ -27,7 +27,8 @@ def send_node():
         This functions send the number of slaves in the mesh to the server
     '''
     for i in msg["devices"]:
-        p = influxdb_client.Point("connections").tag("Host", str(i)).field("Estatus",1)
+        p = influxdb_client.Point("connections").tag("Host", str(i)).field("status",1)
+        p = influxdb_client.Point("connections").tag("Host", msg["id"]).field("nodes",int(msg["nodes"]))
         print("writing node --> ",p)
         write_api.write(bucket=bucket, org=org, record=p)
     return None
