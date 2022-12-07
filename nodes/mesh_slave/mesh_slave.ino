@@ -6,15 +6,15 @@
 
 // Libraries
 #include <DHT.h>
-#include "painlessMesh.h"
+#include <painlessMesh.h>
 
 // HW
-#define DHTTYPE   DHT22
+#define DHTTYPE   DHT11
 #define DHTPIN    13 
 #define BTN       0
 #define PIR       5 
 #define LDR       A0
-#define NAME    "INSERT_NAME"
+#define NAME    "echo"
 
 // SW
 #define MASTER    3257176644
@@ -93,12 +93,17 @@ void sendMessage() {
   JsonArray group = doc.createNestedArray("group");
 
   StaticJsonDocument<100> sensor;
-  sensor["sensor"] = "dht22";
+  sensor["sensor"] = "esp8266";
+  sensor["measure"] = "status";
+  sensor["value"] = "1";  
+  group.add(sensor);  
+  
+  sensor["sensor"] = "dht11";
   sensor["measure"] = "temperature";
   sensor["value"] = String(t);  
   group.add(sensor);
 
-  sensor["sensor"] = "dht22";
+  sensor["sensor"] = "dht11";
   sensor["measure"] = "humidity";
   sensor["value"] = String(h); 
   group.add(sensor);
