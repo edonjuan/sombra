@@ -15,6 +15,8 @@
 #define DELTA    3257178212  
 #define ECHO     3257177579 
 
+#define ZEROSMAX 10
+
 #define node_rate  15
 
 String devices[5] = {"alpha", "bravo", "charly", "delta", "echo"};
@@ -69,6 +71,7 @@ void receivedCallback(uint32_t from, String&msg ) {
 
 void node_task(){
     short i, total;   
+    static short zeros;
 
     StaticJsonDocument<200> doc;    
     doc["type"] = "nodes";
@@ -83,6 +86,16 @@ void node_task(){
         dispositivos.add(devices[i]);
         total++;
       } 
+    }
+
+    if(total == 0)
+    {
+      zeros++;
+      if(zeros >= ZEROSMAX) ESP.reset();
+    }
+    else
+    {
+      zeros = 0;
     }
     
     doc["nodes"] = String (total);    
