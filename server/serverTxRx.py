@@ -7,17 +7,7 @@ def send_data():
         This functions send the data of the sensors to the server
     '''
     for i in msg["group"]:
-        '''
-        try:
-            p = influxdb_client.Point(i["sensor"]).tag("Host",msg["id"]).field(i["measure"], float(i["value"]))
-            print("writing data --> ",p)
-            write_api.write(bucket=bucket, org=org, record=p)
-        except ValueError: 
-            p = influxdb_client.Point(i["sensor"]).tag("Host",msg["id"]).field(i["measure"], float(i["value"]))
-            print("writing data --> ",p)
-            write_api.write(bucket=bucket, org=org, record=p)
-        '''
-        p = influxdb_client.Point(i["sensor"]).tag("Host",msg["id"]).field(i["measure"], float(i["value"]))
+        p = influxdb_client.Point(i["sensor"]).tag("host",msg["id"]).field(i["measure"], float(i["value"]))
         print("writing data --> ",p)
         write_api.write(bucket=bucket, org=org, record=p)
     return None
@@ -26,19 +16,18 @@ def send_node():
     '''
         This functions send the number of slaves in the mesh to the server
     '''
-    for i in msg["devices"]:
-        p = influxdb_client.Point("connections").tag("Host", str(i)).field("Estatus",1)
-        print("writing node --> ",p)
-        write_api.write(bucket=bucket, org=org, record=p)
+    p = influxdb_client.Point("connections").tag("host", msg["id"]).field("nodes",int(msg["nodes"]))
+    print("writing node --> ",p)
+    write_api.write(bucket=bucket, org=org, record=p)
     return None
 
 #Serial comunication
-puertoSerial = serial.Serial('/dev/tty.usbserial-0001', 9600)
+puertoSerial = serial.Serial('/dev/ttyUSB0', 9600)
 time.sleep(2)
 #Influx info
-bucket = "mesh"
-org = "karma"
-token="QGk5MP-jHwbQtx_eiyFVAEgEDUbae8282XKDNRkOs-vJ7r6ozz9CIvabD9TxdZrt_iZa-e1L1lMHJxCCq7FZhQ=="
+bucket = "mesh-name"
+org = "org-name"
+token="api-token"
 url="http://localhost:8086"
 client = influxdb_client.InfluxDBClient(
     url=url,
