@@ -118,7 +118,7 @@ void sendMessage() {
   sensor["value"] = String(mov_detections); 
   group.add(sensor);
   
-  serializeJson(doc, Serial);
+  serializeJsonPretty(doc, Serial);
   Serial.println(); 
 
   String output;
