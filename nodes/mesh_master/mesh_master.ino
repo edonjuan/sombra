@@ -19,7 +19,11 @@
 
 #define node_rate  15
 
-String devices[5] = {"alpha", "bravo", "charly", "delta", "echo"};
+String devices[26] = {"alpha", "bravo", "charly", "delta", "echo",
+                     "foxtrot", "golf", "hotel", "india", "juliet",
+                     "kilo", "lima", "mike", "november", "oscar",
+                     "papa", "quebec", "romeo", "sierra", "tango",
+                     "uniform", "victor", "whiskey", "xray", "yankee", "zulu"};
 unsigned int nodes;
 
 // Objects
@@ -60,7 +64,7 @@ void receivedCallback(uint32_t from, String&msg ) {
     JsonObject obj = doc.as<JsonObject>();
 
     String id = obj["id"];
-    for(i=0; i<5; i++)
+    for(i=0; i<26; i++)
     {
       if(id == devices[i])
       {
@@ -79,7 +83,7 @@ void node_task(){
 
     JsonArray dispositivos = doc.createNestedArray("devices");
 
-    for(i=0; i<5; i++)
+    for(i=0; i<26; i++)
     {
       if(nodes & (1<<i))
       {
