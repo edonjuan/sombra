@@ -242,7 +242,7 @@ void neo_level(float level)
   }
   else if(level>2200)
   {
-    neo.setPixelColor(2,255,128,0); 
+    neo.setPixelColor(2,255,70,0); 
     digitalWrite(BUZZER, LOW);
   }
   else if(level>1500)
