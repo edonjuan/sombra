@@ -14,7 +14,7 @@
 #define BTN       0
 #define PIR       5 
 #define LDR       A0
-#define NAME    "echo"
+#define NAME    "delta"
 
 // SW
 #define MASTER    3257176644
@@ -78,11 +78,6 @@ void loop() {
 
 void sendMessage() {
 
-  float t=dht.readTemperature();
-  float h=dht.readHumidity();  
-  if (isnan(h) || isnan(t))
-   Serial.println(F("Failed to read DHT!"));
-  
   float l = analogRead(LDR);
     
   StaticJsonDocument<500> doc;  
@@ -97,16 +92,25 @@ void sendMessage() {
   sensor["measure"] = "status";
   sensor["value"] = "1";  
   group.add(sensor);  
-  
-  sensor["sensor"] = "dht11";
-  sensor["measure"] = "temperature";
-  sensor["value"] = String(t);  
-  group.add(sensor);
 
-  sensor["sensor"] = "dht11";
-  sensor["measure"] = "humidity";
-  sensor["value"] = String(h); 
-  group.add(sensor);
+  float t=dht.readTemperature();
+  float h=dht.readHumidity();  
+  if (isnan(h) || isnan(t))
+  {
+    Serial.println(F("Failed to read DHT!"));
+  }
+  else
+  {
+    sensor["sensor"] = "dht11";
+    sensor["measure"] = "temperature";
+    sensor["value"] = String(t);  
+    group.add(sensor);
+  
+    sensor["sensor"] = "dht11";
+    sensor["measure"] = "humidity";
+    sensor["value"] = String(h); 
+    group.add(sensor);
+  }  
 
   sensor["sensor"] ="ldr";
   sensor["measure"] = "light";

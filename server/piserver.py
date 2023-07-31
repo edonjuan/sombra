@@ -33,19 +33,6 @@ def send_node():
     write_api.write(bucket=bucket, org=org, record=p)
     return None
 
-#Serial comunication
-while True:
-    try:
-        puertos = puertos_seriales()
-        puerto = puertos[0]
-        puertoSerial = serial.Serial(puerto, 9600)
-        time.sleep(2)
-        break
-    except KeyboardInterrupt:
-        break
-    except Exception as e:
-        print(e)
-
 #Influx info
 bucket = "mesh4"
 org = "intel"
@@ -59,7 +46,22 @@ client = influxdb_client.InfluxDBClient(
 
 write_api = client.write_api(write_options=SYNCHRONOUS)
 #Receive and send data.
+flag = False
 while True:
+    if flag == False:
+        #Serial comunication
+        while True:
+            try:
+                puertos = puertos_seriales()
+                puerto = puertos[0]
+                puertoSerial = serial.Serial(puerto, 9600)
+                time.sleep(2)
+                break
+            except KeyboardInterrupt:
+                break
+            except Exception as e:
+                print(e)
+        flag=True
     try:
         msg = json.loads(puertoSerial.readline())
         #debug
@@ -102,8 +104,10 @@ while True:
             send_data()
         elif msg["type"]=="nodes":
             send_node()
+        puertoSerial.flush();
     except KeyboardInterrupt:
         break
     except Exception as e:
         print(e,' type->' ,type(e))
+        flag = False
 puertoSerial.close()
