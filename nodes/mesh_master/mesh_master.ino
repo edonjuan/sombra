@@ -3,20 +3,17 @@
 
 // Libraries
 #include "painlessMesh.h"
+#include <Adafruit_NeoPixel.h> 
 
 // Define's
-#define   MESH_PREFIX     "MESH_intel"
+#define   MESH_PREFIX     "UTEQ_CLIMOVI"
 #define   MESH_PASSWORD   "uteqintel"
 #define   MESH_PORT       5555
 
-#define MASTER   3257176644
-#define BRAVO    3822979383
-#define CHARLY   2440612283 
-#define DELTA    3257178212  
-#define ECHO     3257177579 
+#define   NEOPIXELPIN     D4
+#define   NEOPIXELLEDS    1
 
-#define ZEROSMAX 10
-
+#define ZEROSMAX 8
 #define node_rate  15
 
 String devices[26] = {"alpha", "bravo", "charly", "delta", "echo",
@@ -29,6 +26,8 @@ unsigned int nodes;
 // Objects
 Scheduler userScheduler;
 painlessMesh  mesh;
+Adafruit_NeoPixel neo = Adafruit_NeoPixel(NEOPIXELLEDS, NEOPIXELPIN, NEO_GRB + NEO_KHZ800); 
+
 
 void node_task();
 Task taskNodes(TASK_SECOND *node_rate, TASK_FOREVER, &node_task);
@@ -38,7 +37,13 @@ void setup() {
   // HW
   Serial.begin(9600);
   pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, !LOW);
+  digitalWrite(LED_BUILTIN, LOW);
+
+  // NeoPixel
+  neo.begin();             
+  neo.setBrightness(255);
+  neo.setPixelColor(0,255,0,0); // (POS; R;G;B)
+  neo.show();
 
   mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
   mesh.onReceive(&receivedCallback);
@@ -54,10 +59,10 @@ void receivedCallback(uint32_t from, String&msg ) {
 
     short i;
 
-    digitalWrite(LED_BUILTIN, !HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
     Serial.print(msg);
     Serial.println();
-    digitalWrite(LED_BUILTIN, !LOW);
+    digitalWrite(LED_BUILTIN, LOW);
 
     DynamicJsonDocument doc(100);
     deserializeJson(doc, msg);
@@ -95,11 +100,15 @@ void node_task(){
     if(total == 0)
     {
       zeros++;
+      neo.setPixelColor(0,255,0,0); // (POS; R;G;B)
+      neo.show();  
       if(zeros >= ZEROSMAX) ESP.reset();
     }
     else
     {
       zeros = 0;
+      neo.setPixelColor(0,0,0,255); // (POS; R;G;B)
+      neo.show();
     }
     
     doc["nodes"] = String (total);    

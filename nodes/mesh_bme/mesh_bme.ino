@@ -27,6 +27,7 @@
 
 // SW   rate-->seconds
 #define MASTER    3257176644
+#define MASTER    3257176644
 #define msg_rate  10
 #define wtd_rate  10
 #define wtd_rest  3

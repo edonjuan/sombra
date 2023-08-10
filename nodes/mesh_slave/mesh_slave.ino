@@ -17,13 +17,13 @@
 #define NAME    "delta"
 
 // SW
-#define MASTER    3257176644
+#define MASTER    693463611
 #define msg_rate  10
 #define wtd_rate  10
 #define wtd_rest  3
 
 // NETWORK
-#define   MESH_PREFIX     "MESH_intel"
+#define   MESH_PREFIX     "UTEQ_CLIMOVI"
 #define   MESH_PASSWORD   "uteqintel"
 #define   MESH_PORT       5555
 
